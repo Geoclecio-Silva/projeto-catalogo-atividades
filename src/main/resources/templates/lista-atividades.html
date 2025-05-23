@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Atividades Cadastradas</title>
+    <style>
+        body { font-family: Arial; margin: 20px; background-color: #f5f5f5; }
+        .card {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 1px 1px 8px rgba(0,0,0,0.1);
+        }
+        .banner {
+            max-width: 100%;
+            max-height: 250px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .habilidades {
+            font-size: 0.9em;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h2>Lista de Atividades</h2>
+
+        <!-- FORMULÁRIO DE FILTRO -->
+        <form method="get" th:action="@{/atividades/lista}">
+            <input type="text" name="titulo" placeholder="Buscar por título..." th:value="${param.titulo}" />
+
+            <select name="categoriaId">
+                <option value="">Todas as categorias</option>
+                <option th:each="c : ${categorias}"
+                        th:value="${c.id}"
+                        th:text="${c.nome}"
+                        th:selected="${param.categoriaId == c.id}">
+                </option>
+            </select>
+
+            <select name="habilidadeId">
+                <option value="">Todas as habilidades</option>
+                <option th:each="h : ${habilidades}"
+                        th:value="${h.id}"
+                        th:text="${h.codigo} + ' - ' + ${h.descricao}"
+                        th:selected="${param.habilidadeId == h.id}">
+                </option>
+            </select>
+
+            <button type="submit">🔍 Buscar</button>
+        </form>
+
+
+        <table border="1" cellpadding="8" cellspacing="0">
+            <tr>
+                <th>Título</th>
+                <th>Data</th>
+                <th>Categoria</th>
+                <th>Responsável</th>
+                <th>Banner</th>
+            </tr>
+            <tr th:each="a : ${atividades}">
+                <td th:text="${a.titulo}"></td>
+                <td th:text="${a.dataRealizacao}"></td>
+                <td th:text="${a.categoria.nome}"></td>
+                <td th:text="${a.responsavel.nome}"></td>
+                <td>
+                    <img th:src="${a.bannerUrl}" style="max-height: 60px;" th:if="${a.bannerUrl}" />
+                </td>
+            </tr>
+        </table>
+    </main>
+
+
+    <h2>Atividades Cadastradas</h2>
+
+    <div th:each="a : ${atividades}" class="card">
+        <img th:if="${a.bannerUrl}" th:src="${a.bannerUrl}" alt="Banner" class="banner"/>
+        
+        <h3 th:text="${a.titulo}">Título</h3>
+        <p><strong>Data:</strong> <span th:text="${a.dataRealizacao}"></span></p>
+        <p><strong>Categoria:</strong> <span th:text="${a.categoria.nome}"></span></p>
+        <p><strong>Responsável:</strong> <span th:text="${a.responsavel.nome}"></span></p>
+
+        <div class="habilidades">
+            <strong>Habilidades BNCC:</strong>
+            <ul>
+                <li th:each="h : ${a.habilidades}" th:text="${h.id} + ' - ' + ${h.descricao}"></li>
+            </ul>
+        </div>
+
+        <p>
+            <a th:href="@{/atividades/editar/{id}(id=${a.id})}">✏️ Editar</a> |
+            <a th:href="@{/atividades/excluir/{id}(id=${a.id})}" onclick="return confirm('Deseja realmente excluir?')">🗑️ Excluir</a>
+        </p>
+
+    </div>
+
+</body>
+</html>

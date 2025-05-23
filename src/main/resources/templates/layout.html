@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Catálogo de Atividades</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: sans-serif;
+            display: flex;
+        }
+
+        nav {
+            width: 220px;
+            height: 100vh;
+            background-color: #2c3e50;
+            padding: 20px;
+            color: white;
+        }
+
+        nav h2 {
+            font-size: 20px;
+            margin-bottom: 30px;
+        }
+
+        nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #34495e;
+            border-radius: 5px;
+        }
+
+        nav a:hover {
+            background-color: #1abc9c;
+        }
+
+        main {
+            flex: 1;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h2>Catálogo</h2>
+        <a th:href="@{/atividades/lista}">📄 Listar Atividades</a>
+        <a th:href="@{/atividades/form}">➕ Nova Atividade</a>
+    </nav>
+
+    <main th:replace="~{::main}"></main>
+</body>
+</html>

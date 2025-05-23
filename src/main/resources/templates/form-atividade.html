@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      th:replace="layout :: layout"></html>>
+    
+<head>
+    <title>Cadastro de Atividade</title>
+    <meta charset="UTF-8"/>
+    <style>
+        form {
+            max-width: 600px;
+            margin: auto;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        small {
+            color: red;
+        }
+        label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h2 th:text="${atividade.id == null ? 'Cadastrar Nova Atividade' : 'Editar Atividade'}"></h2>
+
+        <form th:action="@{/atividades/salvar}" method="post" enctype="multipart/form-data" th:object="${atividade}">
+
+            <!-- Campo oculto de ID para edição -->
+            <input type="hidden" th:field="*{id}" />
+
+            <!-- TÍTULO -->
+            <label for="titulo">Título:</label>
+            <input type="text" th:field="*{titulo}" id="titulo" required />
+            <small th:if="${#fields.hasErrors('titulo')}" th:errors="*{titulo}"></small>
+
+            <!-- DATA -->
+            <label for="data">Data de Realização:</label>
+            <input type="date" name="data" id="data" th:value="${atividade.dataRealizacao}" required />
+            <small th:if="${#fields.hasErrors('dataRealizacao')}" th:errors="*{dataRealizacao}"></small>
+
+            <!-- CATEGORIA -->
+            <label for="categoria">Categoria:</label>
+            <select th:field="*{categoria}" id="categoria" required>
+                <option value="" disabled selected>Selecione uma categoria</option>
+                <option th:each="c : ${categorias}" th:value="${c}" th:text="${c.nome}"></option>
+            </select>
+            <small th:if="${#fields.hasErrors('categoria')}" th:errors="*{categoria}"></small>
+
+            <!-- RESPONSÁVEL -->
+            <label for="responsavel">Responsável:</label>
+            <select th:field="*{responsavel}" id="responsavel" required>
+                <option value="" disabled selected>Selecione um responsável</option>
+                <option th:each="u : ${usuarios}" th:value="${u}" th:text="${u.nome}"></option>
+            </select>
+            <small th:if="${#fields.hasErrors('responsavel')}" th:errors="*{responsavel}"></small>
+
+            <!-- HABILIDADES -->
+            <label for="habilidades">Habilidades BNCC:</label>
+            <select multiple name="habilidadeIds" id="habilidades" required>
+                <option th:each="h : ${habilidades}"
+                        th:value="${h.id}"
+                        th:text="${h.id + ' - ' + h.descricao}"
+                        th:selected="${atividade.habilidades.contains(h)}">
+                </option>
+            </select>
+            <small th:if="${#fields.hasErrors('habilidades')}" th:errors="*{habilidades}"></small>
+
+            <!-- BANNER -->
+            <label for="banner">Imagem Banner:</label>
+            <input type="file" name="banner" id="banner" accept="image/*" />
+
+            <div th:if="${atividade.bannerUrl}">
+                <p>Banner atual:</p>
+                <img th:src="${atividade.bannerUrl}" alt="Banner" style="max-width: 100%; height: auto;"/>
+            </div>
+
+            <!-- BOTÃO -->
+            <button type="submit">Salvar</button>
+        </form>
+    </main>
+</body>
+</html>
