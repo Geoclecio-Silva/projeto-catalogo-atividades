@@ -17,28 +17,29 @@ public class SecurityConfig {
 
     private final UsuarioDetailsService usuarioDetailsService;
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/css/**", "/js/**", "/images/**").permitAll()
-                .requestMatchers("/atividades/cadastrar", "/atividades/salvar").hasAnyRole("ADMIN", "COLABORADOR")
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form
-                .loginPage("/login")
-                .defaultSuccessUrl("/atividades/lista", true)
-                .permitAll()
-            )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
-                .permitAll()
-            )
-            .userDetailsService(usuarioDetailsService);
+   @Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http
+        .csrf(csrf -> csrf.disable())
+        .authorizeHttpRequests(auth -> auth
+            .requestMatchers("/", "/atividades/publica", "/uploads/**", "/login", "/css/**", "/js/**", "/images/**").permitAll()
+            .requestMatchers("/atividades/cadastrar", "/atividades/salvar").hasAnyRole("ADMIN", "COLABORADOR")
+            .anyRequest().authenticated()
+        )
+        .formLogin(form -> form
+            .loginPage("/login")
+            .defaultSuccessUrl("/atividades/lista", true)
+            .permitAll()
+        )
+        .logout(logout -> logout
+            .logoutSuccessUrl("/login?logout")
+            .permitAll()
+        )
+        .userDetailsService(usuarioDetailsService);
 
-        return http.build();
-    }
+    return http.build();
+}
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

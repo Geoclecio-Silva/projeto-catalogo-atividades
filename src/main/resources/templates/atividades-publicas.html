@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atividades Cadastradas</title>
+    <link rel="stylesheet" th:href="@{/css/publico.css}">
+</head>
+<body>
+<div class="wrapper">
+
+    <!-- CABEÇALHO FIXO COM MENU RESPONSIVO -->
+    <header>
+    <div class="container">
+        <div class="logo">
+            <a href="/">📘 Catálogo de Atividades</a>
+        </div>
+
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+
+        <nav class="nav-menu" id="nav-menu">
+            <a href="/">Início</a>
+            <a href="/atividades/lista">Gerenciar</a>
+            <a href="/atividades/nova">Nova Atividade</a>
+        </nav>
+    </div>
+</header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main>
+        <h2>Consulta de Atividades</h2>
+
+        <!-- FORMULÁRIO DE FILTRO -->
+        <form method="get" th:action="@{/}">
+            <input type="text" name="titulo" placeholder="Buscar por título..." th:value="${param.titulo}" />
+
+            <select name="categoriaId">
+                <option value="">Todas as categorias</option>
+                <option th:each="c : ${categorias}"
+                        th:value="${c.id}"
+                        th:text="${c.nome}"
+                        th:selected="${param.categoriaId == c.id}">
+                </option>
+            </select>
+
+            <select name="habilidadeId">
+                <option value="">Todas as habilidades</option>
+                <option th:each="h : ${habilidades}"
+                        th:value="${h.id}"
+                        th:text="${h.id} + ' - ' + ${h.descricao}"
+                        th:selected="${param.habilidadeId == h.id}">
+                </option>
+            </select>
+
+            <button type="submit">🔍 Buscar</button>
+        </form>
+
+        <!-- LISTAGEM DE ATIVIDADES -->
+        <div th:each="a : ${atividades}" class="card">
+            <img th:if="${a.bannerUrl}" th:src="${a.bannerUrl}" alt="Banner" class="banner"/>
+
+            <h3 th:text="${a.titulo}">Título</h3>
+            <p><strong>Data:</strong> <span th:text="${a.dataRealizacao}"></span></p>
+            <p><strong>Categoria:</strong> <span th:text="${a.categoria.nome}"></span></p>
+            <p><strong>Responsável:</strong> <span th:text="${a.responsavel.nome}"></span></p>
+
+            <div class="habilidades">
+                <strong>Habilidades BNCC:</strong>
+                <ul>
+                    <li th:each="h : ${a.habilidades}" th:text="${h.id} + ' - ' + ${h.descricao}"></li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer>
+        <p>Catálogo de Atividades Públicas - 2025</p>
+        <p>Desenvolvido com 💙 para fins educacionais</p>
+        <p>
+            Contato: <a href="mailto:contato@educacao.gov.br">contato@educacao.gov.br</a>
+        </p>
+    </footer>
+
+</div>
+
+<!-- SCRIPT DO MENU HAMBURGUER -->
+<script>
+        document.getElementById('menu-toggle').addEventListener('click', function(e) {
+        e.stopPropagation();
+        const menu = document.getElementById('nav-menu');
+        menu.classList.toggle('active');
+        document.body.classList.toggle('menu-open');
+    });
+
+    // Fechar o menu ao clicar fora
+    document.addEventListener('click', function(e) {
+        const menu = document.getElementById('nav-menu');
+        if (menu.classList.contains('active')){
+            menu.classList.remove('active');
+            document.body.classList.remove('menu-open');
+        }
+    });
+
+    // Impedir que o clique no menu feche ele
+    document.getElementById('nav-menu').addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+</script>
+
+</body>
+</html>
